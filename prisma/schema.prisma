@@ -23,8 +23,6 @@ model User {
 
   accounts      Account[]
   sessions      Session[]
-
-  organizedTournaments Tournament[] @relation("OrganizerTournaments")
 }
 
 model Account {
@@ -68,11 +66,6 @@ model Tournament {
   currentRound  Int      @default(0)
   startDate     DateTime
   status        String   @default("upcoming") // "upcoming", "active", "completed"
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  organizerId   String
-  organizer     User     @relation("OrganizerTournaments", fields: [organizerId], references: [id])
-
   players       Player[]
   pairings      Pairing[]
 }

@@ -2,42 +2,55 @@
 // app/api/action/tournament-actions.ts
 import { revalidatePath } from "next/cache"
 import { generatePairings } from "../../../lib/swiss-pairing"
+import { db } from "../../../server/db";
 
 // Mock data for demonstration purposes
 // In a real application, this would be replaced with database calls
 
-let tournaments = [ 
-  {
-    id: "1",
-    name: "City Championship 2025",
-    rounds: 5,
-    currentRound: 2,
-    startDate: "2025-01-15T00:00:00.000Z",
-    status: "active",
-    participantsCount: 8,
-  },
-  {
-    id: "2",
-    name: "Junior Tournament",
-    rounds: 7,
-    currentRound: 0,
-    startDate: "2025-02-20T00:00:00.000Z",
-    status: "upcoming",
-    participantsCount: 0,
-  },
-]
+// let tournaments = [ 
+//   {
+//     id: "1",
+//     name: "City Championship 2025",
+//     rounds: 5,
+//     currentRound: 2,
+//     startDate: "2025-01-15T00:00:00.000Z",
+//     status: "active",
+//     participantsCount: 8,
+//   },
+//   {
+//     id: "2",
+//     name: "Junior Tournament",
+//     rounds: 7,
+//     currentRound: 0,
+//     startDate: "2025-02-20T00:00:00.000Z",
+//     status: "upcoming",
+//     participantsCount: 0,
+//   },
+// ]
 
 export async function getTournaments() {
-  // In a real app, fetch from database
+  const tournaments = await db.tournament.findMany({
+    orderBy: { startDate: "asc" },
+    include: { players: true }, // если связь есть
+  });
   return tournaments
 }
 
 export async function getTournamentByName(name: string) {
   try {
-    // In a real app, fetch from database
-    return tournaments.find((t) => t.name === name) || null
+    const tournament = await db.tournament.findUnique({
+      where: {
+        name,
+      },
+      include: {
+        players: true, // ВОЗМОЖНО НЕ НУЖНО
+        pairings: true, // УБРАТЬ ПОТОМ
+      },
+    })
+
+    return tournament
   } catch (error) {
-    console.error("Error fetching tournament:", error)
+    console.error("Error fetching tournament by name:", error)
     return null
   }
 }
@@ -47,25 +60,23 @@ export async function createTournament({
   rounds,
   startDate,
 }: {
-  name: string
-  rounds: number
-  startDate: string
+  name: string;
+  rounds: number;
+  startDate: string;
 }) {
-  // In a real app, save to database
-  const newTournament = {
-    id: Date.now().toString(),
-    name,
-    rounds,
-    currentRound: 0,
-    startDate,
-    status: "upcoming" as const,
-    participantsCount: 0,
-  }
+  const tournament = await db.tournament.create({
+    data: {
+      name,
+      rounds,
+      startDate: new Date(startDate),
+      currentRound: 0,
+      status: "upcoming",
+    },
+  });
 
-  tournaments.push(newTournament)
-  revalidatePath("/")
+  revalidatePath("/");
 
-  return newTournament.id
+  return tournament.id;
 }
 
 export async function generateNextRound(tournamentId: string) {
