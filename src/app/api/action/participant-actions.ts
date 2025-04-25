@@ -1,102 +1,32 @@
 "use server"
-
+//src/app/api/action/participant-actions.ts
 import { revalidatePath } from "next/cache"
-
-// Mock data for demonstration purposes
-// In a real application, this would be replaced with database calls
-
-let participants: {
-  id: string
-  tournamentId: string
-  name: string
-  surname: string
-  rating: number
-}[] = [
-  {
-    id: "p1",
-    tournamentId: "1",
-    name: "Magnus",
-    surname: "Carlsen",
-    rating: 2850,
-  },
-  {
-    id: "p2",
-    tournamentId: "1",
-    name: "Fabiano",
-    surname: "Caruana",
-    rating: 2800,
-  },
-  {
-    id: "p3",
-    tournamentId: "1",
-    name: "Ding",
-    surname: "Liren",
-    rating: 2780,
-  },
-  {
-    id: "p4",
-    tournamentId: "1",
-    name: "Ian",
-    surname: "Nepomniachtchi",
-    rating: 2775,
-  },
-  {
-    id: "p5",
-    tournamentId: "1",
-    name: "Hikaru",
-    surname: "Nakamura",
-    rating: 2770,
-  },
-  {
-    id: "p6",
-    tournamentId: "1",
-    name: "Wesley",
-    surname: "So",
-    rating: 2760,
-  },
-  {
-    id: "p7",
-    tournamentId: "1",
-    name: "Anish",
-    surname: "Giri",
-    rating: 2750,
-  },
-  {
-    id: "p8",
-    tournamentId: "1",
-    name: "Alireza",
-    surname: "Firouzja",
-    rating: 2745,
-  },
-]
+import { db } from "../../../server/db";
 
 export async function getParticipants(tournamentId: string) {
-  // In a real app, fetch from database
-  return participants.filter((p) => p.tournamentId === tournamentId)
-}
+  const players = await db.player.findMany({
+    where: { tournamentId },
+    orderBy: { rating: "desc" },
+  })
 
+  return players
+}
 export async function addParticipant(
   tournamentId: string,
-  { name, surname, rating }: { name: string; surname: string; rating: number },
+  { firstName, lastName, rating }: { firstName: string; lastName: string; rating: number },
 ) {
-  // In a real app, save to database
-  const newParticipant = {
-    id: `p${Date.now()}`,
-    tournamentId,
-    name,
-    surname,
-    rating,
-  }
+  const newParticipant = await db.player.create({
+    data: {
+      tournamentId,
+      firstName: firstName,
+      lastName: lastName,
+      rating,
+    },
+  })
 
-  participants.push(newParticipant)
-
-  // Update participant count in tournament
-  const tournaments = await import("./tournament-actions").then((module) => module.getTournaments())
-
-  const tournament = tournaments.find((t) => t.id === tournamentId)
-  if (tournament) {
-    tournament.participantsCount += 1
-  }
+  const tournament = await db.tournament.findUnique({
+    where: { id: tournamentId },
+  })
 
   revalidatePath(`/${encodeURIComponent(tournament?.name || "")}`)
 
@@ -104,22 +34,20 @@ export async function addParticipant(
 }
 
 export async function removeParticipant(tournamentId: string, participantId: string) {
-  // In a real app, delete from database
-  const initialLength = participants.length
-  participants = participants.filter((p) => !(p.tournamentId === tournamentId && p.id === participantId))
+  const participant = await db.player.findUnique({
+    where: { id: participantId },
+  })
 
-  if (participants.length < initialLength) {
-    // Update participant count in tournament
-    const tournaments = await import("./tournament-actions").then((module) => module.getTournaments())
+  if (!participant || participant.tournamentId !== tournamentId) return false
 
-    const tournament = tournaments.find((t) => t.id === tournamentId)
-    if (tournament) {
-      tournament.participantsCount -= 1
-    }
+  await db.player.delete({
+    where: { id: participantId },
+  })
 
-    revalidatePath(`/${encodeURIComponent(tournament?.name || "")}`)
-    return true
-  }
+  const tournament = await db.tournament.findUnique({
+    where: { id: tournamentId },
+  })
 
-  return false
+  revalidatePath(`/${encodeURIComponent(tournament?.name || "")}`)
+  return true
 }

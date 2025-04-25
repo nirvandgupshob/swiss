@@ -21,8 +21,8 @@ import { useRouter } from "next/navigation"
 
 type Participant = {
   id: string
-  name: string
-  surname: string
+  firstName: string
+  lastName: string
   rating: number
 }
 
@@ -36,26 +36,26 @@ export function ParticipantsList({ tournamentId, initialParticipants }: Particip
   const [participants, setParticipants] = useState<Participant[]>(initialParticipants)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [newParticipant, setNewParticipant] = useState({
-    name: "",
-    surname: "",
+    firstName: "",
+    lastName: "",
     rating: "",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   async function handleAddParticipant(e: React.FormEvent) {
     e.preventDefault()
-    if (!newParticipant.name || !newParticipant.surname || !newParticipant.rating) return
+    if (!newParticipant.firstName || !newParticipant.lastName || !newParticipant.rating) return
 
     setIsSubmitting(true)
     try {
       const participant = await addParticipant(tournamentId, {
-        name: newParticipant.name,
-        surname: newParticipant.surname,
+        firstName: newParticipant.firstName,
+        lastName: newParticipant.lastName,
         rating: Number.parseInt(newParticipant.rating),
       })
 
       setParticipants((prev) => [...prev, participant])
-      setNewParticipant({ name: "", surname: "", rating: "" })
+      setNewParticipant({ firstName: "", lastName: "", rating: "" })
       setDialogOpen(false)
       router.refresh()
     } catch (error) {
@@ -96,20 +96,20 @@ export function ParticipantsList({ tournamentId, initialParticipants }: Particip
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="name">First Name</Label>
+                  <Label htmlFor="firstName">First Name</Label>
                   <Input
-                    id="name"
-                    value={newParticipant.name}
-                    onChange={(e) => setNewParticipant({ ...newParticipant, name: e.target.value })}
+                    id="firstName"
+                    value={newParticipant.firstName}
+                    onChange={(e) => setNewParticipant({ ...newParticipant, firstName: e.target.value })}
                     required
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="surname">Last Name</Label>
+                  <Label htmlFor="lastName">Last Name</Label>
                   <Input
-                    id="surname"
-                    value={newParticipant.surname}
-                    onChange={(e) => setNewParticipant({ ...newParticipant, surname: e.target.value })}
+                    id="lastName"
+                    value={newParticipant.lastName}
+                    onChange={(e) => setNewParticipant({ ...newParticipant, lastName: e.target.value })}
                     required
                   />
                 </div>
@@ -136,7 +136,7 @@ export function ParticipantsList({ tournamentId, initialParticipants }: Particip
         </Dialog>
       </div>
 
-      {participants.length === 0 ? (
+      {participants === undefined ? (
         <div className="text-center py-10 border rounded-lg">
           <p className="text-muted-foreground">No participants added yet.</p>
           <p className="text-sm text-muted-foreground mt-1">Add participants to start the tournament.</p>
@@ -156,7 +156,7 @@ export function ParticipantsList({ tournamentId, initialParticipants }: Particip
               <TableRow key={participant.id}>
                 <TableCell className="font-medium">{index + 1}</TableCell>
                 <TableCell>
-                  {participant.surname}, {participant.name}
+                  {participant.lastName}, {participant.firstName}
                 </TableCell>
                 <TableCell>{participant.rating}</TableCell>
                 <TableCell className="text-right">

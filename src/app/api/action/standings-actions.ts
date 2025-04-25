@@ -1,8 +1,5 @@
 "use server"
-
-// Mock data for demonstration purposes
-// In a real application, this would be replaced with database calls
-
+//src/app/api/action/standings-actions.ts
 export async function getStandings(tournamentId: string) {
   // Get participants and pairings
   const participants = await import("./participant-actions").then((module) =>
@@ -66,8 +63,8 @@ export async function getStandings(tournamentId: string) {
 
     return {
       participantId: participant.id,
-      name: participant.name,
-      surname: participant.surname,
+      name: participant.firstName,
+      surname: participant.lastName,
       rating: participant.rating,
       points,
       buchholz,
@@ -94,3 +91,4 @@ export async function getStandings(tournamentId: string) {
 
   return standings
 }
+ 

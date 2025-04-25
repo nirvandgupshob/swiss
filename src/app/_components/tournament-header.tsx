@@ -70,11 +70,11 @@ export function TournamentHeader({ tournament }: TournamentHeaderProps) {
           <div className="flex items-center mt-2 space-x-4">
             <div className="flex items-center text-sm text-muted-foreground">
               <Calendar className="mr-1 h-4 w-4" />
-              <span>{new Date(tournament.startDate).toLocaleDateString()}</span>
+              <span suppressHydrationWarning={true}>{new Date(tournament.startDate).toLocaleDateString()}</span>
             </div>
             <div className="flex items-center text-sm text-muted-foreground">
               <Users className="mr-1 h-4 w-4" />
-              <span>{tournament.participantsCount} participants</span>
+              <span>{tournament.participantsCount} participants</span> {/* ОШИБКА ЗДЕСЬ */}
             </div>
             <div className="flex items-center text-sm text-muted-foreground">
               <Trophy className="mr-1 h-4 w-4" />
