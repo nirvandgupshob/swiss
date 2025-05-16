@@ -1,10 +1,11 @@
 "use client"
-
-import { useState } from "react"
+import { useState, useTransition } from "react"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card" 
 import { Badge } from "./ui/badge" 
-import { Calendar, Users, ChevronRight } from "lucide-react"
+import { Calendar, Users, ChevronRight, Trash2 } from "lucide-react"
 import Link from "next/link"
+import { Button } from "./ui/button"
+import { deleteTournament } from "../api/action/tournament-actions"
 
 type Tournament = {
   id: string
@@ -20,7 +21,15 @@ interface TournamentListProps {
 }
 
 export function TournamentList({ initialTournaments }: TournamentListProps) {
-  const [tournaments] = useState<Tournament[]>(initialTournaments)
+  const [tournaments, setTournaments] = useState<Tournament[]>(initialTournaments)
+  const [isPending, startTransition] = useTransition()
+
+  const handleDeleteTournament = (id: string) => {
+    startTransition(async () => {
+      await deleteTournament(id)
+      setTournaments((prev) => prev.filter((t) => t.id !== id))
+    })
+  }
 
   if (tournaments.length === 0) {
     return (
@@ -33,30 +42,46 @@ export function TournamentList({ initialTournaments }: TournamentListProps) {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {tournaments.map((tournament) => (
-        <Link href={`/${encodeURIComponent(tournament.name)}`} key={tournament.id}>
-          <Card className="h-full cursor-pointer hover:bg-muted/50 transition-colors">
-            <CardHeader className="pb-2">
-              <div className="flex justify-between items-start">
-                <CardTitle className="text-xl">{tournament.name}</CardTitle>
+        <Card key={tournament.id} className="h-full transition-colors">
+          <CardHeader className="pb-2">
+            <div className="flex justify-between items-start">
+              <CardTitle className="text-xl">{tournament.name}</CardTitle>
+              <div className="flex items-center gap-2">
                 <StatusBadge status={tournament.status} />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => handleDeleteTournament(tournament.id)}
+                  disabled={isPending}
+                >
+                  <Trash2 className="h-4 w-4 text-destructive" />
+                </Button>
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center text-sm text-muted-foreground mb-2">
-                <Calendar className="mr-2 h-4 w-4" />
-                <span suppressHydrationWarning={true}>{new Date(tournament.startDate).toLocaleDateString()}</span>
+            </div>
+          </CardHeader>
+
+          <CardContent className="cursor-pointer">
+            <Link href={`/${encodeURIComponent(tournament.name)}`}>
+              <div>
+                <div className="flex items-center text-sm text-muted-foreground mb-2">
+                  <Calendar className="mr-2 h-4 w-4" />
+                  <span suppressHydrationWarning={true}>
+                    {new Date(tournament.startDate).toLocaleDateString()}
+                  </span>
+                </div>
+                <div className="flex items-center text-sm text-muted-foreground">
+                  <Users className="mr-2 h-4 w-4" />
+                  <span>{tournament.participantsCount} participants</span>
+                </div>
               </div>
-              <div className="flex items-center text-sm text-muted-foreground">
-                <Users className="mr-2 h-4 w-4" />
-                <span>{tournament.participantsCount} participants</span>
-              </div>
-            </CardContent>
-            <CardFooter className="border-t pt-4 flex justify-between">
-              <span className="text-sm">{tournament.rounds} rounds</span>
-              <ChevronRight className="h-5 w-5 text-muted-foreground" />
-            </CardFooter>
-          </Card>
-        </Link>
+            </Link>
+          </CardContent>
+
+          <CardFooter className="border-t pt-4 flex justify-between">
+            <span className="text-sm">{tournament.rounds} rounds</span>
+            <ChevronRight className="h-5 w-5 text-muted-foreground" />
+          </CardFooter>
+        </Card>
       ))}
     </div>
   )

@@ -3,11 +3,16 @@
 import { revalidatePath } from "next/cache"
 import { getParticipants } from "./participant-actions"
 import { db } from "../../../server/db";
+
 export async function getPairings(tournamentId: string) {
   return await db.pairing.findMany({
     where: { tournamentId },
     orderBy: { roundNumber: "asc" },
-  })
+    include: {
+      white: true, 
+      black: true,  
+    },
+  });
 }
 
 export async function updateResult(

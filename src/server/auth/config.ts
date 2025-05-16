@@ -1,8 +1,10 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
+// import { $Enums } from "@prisma/client";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
+import EmailProvider from "next-auth/providers/nodemailer";
+import { sendVerificationRequest } from "src/mailers/auth-mailer";
 
-import { db } from "~/server/db";
+import { db } from "src/server/db";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -15,7 +17,7 @@ declare module "next-auth" {
     user: {
       id: string;
       // ...other properties
-      // role: UserRole;
+      //role: $Enums.Role;
     } & DefaultSession["user"];
   }
 
@@ -32,16 +34,11 @@ declare module "next-auth" {
  */
 export const authConfig = {
   providers: [
-    DiscordProvider,
-    /**
-     * ...add more providers here.
-     *
-     * Most other providers require a bit more work than the Discord provider. For example, the
-     * GitHub provider requires you to add the `refresh_token_expires_in` field to the Account
-     * model. Refer to the NextAuth.js docs for the provider you want to use. Example:
-     *
-     * @see https://next-auth.js.org/providers/github
-     */
+    EmailProvider({
+      server: process.env.EMAIL_SERVER,
+      from: process.env.EMAIL_FROM,
+      sendVerificationRequest: sendVerificationRequest,
+    })
   ],
   adapter: PrismaAdapter(db),
   callbacks: {
@@ -54,3 +51,4 @@ export const authConfig = {
     }),
   },
 } satisfies NextAuthConfig;
+

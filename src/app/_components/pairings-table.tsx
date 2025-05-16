@@ -8,18 +8,22 @@ import { updateResult } from "../api/action/pairing-actions"
 import { useRouter } from "next/navigation"
 
 type Pairing = {
-  id: string
-  roundNumber: number
-  whiteId: string
-  whiteName: string
-  whiteSurname: string
-  whiteRating: number
-  blackId: string
-  blackName: string
-  blackSurname: string
-  blackRating: number
-  result: "1-0" | "0-1" | "½-½" | null
-}
+  id: string;
+  roundNumber: number;
+  result: "1-0" | "0-1" | "½-½" | null;
+  white: {  // Данные белого игрока
+    id: string;
+    firstName: string;
+    lastName: string;
+    rating: number;
+  };
+  black: {  // Данные чёрного игрока
+    id: string;
+    firstName: string;
+    lastName: string;
+    rating: number;
+  };
+};
 
 interface PairingsTableProps {
   tournamentId: string
@@ -100,17 +104,17 @@ export function PairingsTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredPairings.map((pairing, index) => (
-              <TableRow key={pairing.id}>
-                <TableCell className="font-medium">{index + 1}</TableCell>
-                <TableCell>
-                  {pairing.whiteSurname}, {pairing.whiteName}
+          {filteredPairings.map((pairing, index) => (
+            <TableRow key={pairing.id}>
+            <TableCell className="font-medium">{index + 1}</TableCell>
+            <TableCell>
+              {pairing.white.lastName}, {pairing.white.firstName} 
                 </TableCell>
-                <TableCell>{pairing.whiteRating}</TableCell>
+                <TableCell>{pairing.white.rating}</TableCell>
                 <TableCell>
-                  {pairing.blackSurname}, {pairing.blackName}
+                  {pairing.black.lastName}, {pairing.black.firstName} 
                 </TableCell>
-                <TableCell>{pairing.blackRating}</TableCell>
+                <TableCell>{pairing.black.rating}</TableCell>
                 <TableCell>
                   <div className="flex justify-center space-x-2">
                     <Button

@@ -56,6 +56,12 @@ export async function createTournament({
   return tournament.id;
 }
 
+export async function deleteTournament(tournamentId: string) {
+  await db.tournament.delete({
+    where: { id: tournamentId },
+  })
+}
+
 export async function generateNextRound(tournamentId: string) {
   try {
     // Получаем турнир из базы

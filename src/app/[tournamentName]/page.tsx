@@ -35,7 +35,7 @@ export default async function TournamentPage({
 
     return (
       <div className="container mx-auto py-6">
-        <TournamentHeader tournament={tournament} />
+        <TournamentHeader tournament={{ ...tournament, participantsCount: participants.length }} />
 
         <Tabs defaultValue="participants" className="mt-6">
           <TabsList className="grid w-full grid-cols-3">
@@ -44,7 +44,7 @@ export default async function TournamentPage({
             <TabsTrigger value="standings">Standings</TabsTrigger>
           </TabsList>
           <TabsContent value="participants" className="mt-6">
-            <ParticipantsList tournamentId={tournament.id} initialParticipants={participants} />
+            <ParticipantsList tournamentId={tournament.id} tournamentStatus={tournament.status} initialParticipants={participants} />
           </TabsContent>
           <TabsContent value="pairings" className="mt-6">
             <PairingsTable
