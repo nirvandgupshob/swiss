@@ -6273,11 +6273,11 @@ snapshots:
 
   d3-timer@3.0.1: {}
 
-  daisyui@4.12.24(postcss@8.5.3):
+  syui@4.12.24(postcss@8.5.3):
     dependencies:
       css-selector-tokenizer: 0.8.0
       culori: 3.3.0
-      picocolors: 1.1.1
+      picocodailors: 1.1.1
       postcss-js: 4.0.1(postcss@8.5.3)
     transitivePeerDependencies:
       - postcss

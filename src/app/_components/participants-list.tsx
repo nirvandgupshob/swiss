@@ -30,9 +30,10 @@ interface ParticipantsListProps {
   tournamentId: string
   tournamentStatus: "upcoming" | "active" | "completed"
   initialParticipants: Participant[]
+  userRole: "PLAYER" | "JUDGE"
 }
 
-export function ParticipantsList({ tournamentId, tournamentStatus, initialParticipants }: ParticipantsListProps) {
+export function ParticipantsList({ tournamentId, tournamentStatus, initialParticipants, userRole }: ParticipantsListProps) {
   const router = useRouter()
   const [participants, setParticipants] = useState<Participant[]>(initialParticipants)
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -82,7 +83,7 @@ export function ParticipantsList({ tournamentId, tournamentStatus, initialPartic
     <div>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Participants</h2>
-        {tournamentStatus === "upcoming" && (
+        {tournamentStatus === "upcoming" && userRole === "JUDGE" && (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button>
@@ -91,7 +92,6 @@ export function ParticipantsList({ tournamentId, tournamentStatus, initialPartic
             </Button>
           </DialogTrigger>
           <DialogContent>
-            {/* Условный рендеринг */}
             <form onSubmit={handleAddParticipant}>
               <DialogHeader>
                 <DialogTitle>Add Participant</DialogTitle>
@@ -165,7 +165,7 @@ export function ParticipantsList({ tournamentId, tournamentStatus, initialPartic
                 <TableCell>{participant.rating}</TableCell>
                 <TableCell className="text-right">
                   {/* Условный рендеринг */}
-                  {tournamentStatus === "upcoming" && (
+                  {tournamentStatus === "upcoming" && userRole === "JUDGE" && (
                   <Button variant="ghost" size="icon" onClick={() => handleRemoveParticipant(participant.id)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>

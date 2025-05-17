@@ -1,15 +1,40 @@
 "use server"
 // app/api/action/tournament-actions.ts
 import { revalidatePath } from "next/cache"
-import { generatePairings } from "../../../lib/swiss-pairing"
+import { generatePairings } from "./swiss-pairing"
 import { db } from "../../../server/db";
 
 
 export async function getTournaments() {
   const tournaments = await db.tournament.findMany({
     orderBy: { startDate: "asc" },
-    include: { players: true }, // если связь есть
+    include: { players: true }, // если связь есть ПРОВЕРИТЬ НАДО ЛИ
   });
+  return tournaments
+}
+export async function getTournamentsForUser(userId: string) {
+  const user = await db.user.findUnique({
+    where: { id: userId },
+    select: { firstname: true, surname: true },
+  })
+
+  if (!user || !user.firstname || !user.surname) {
+    return [] 
+  }
+
+  const tournaments = await db.tournament.findMany({
+    where: {
+      players: {
+        some: {
+          firstName: user?.firstname,
+          lastName: user?.surname,
+        },
+      },
+    },
+    orderBy: { startDate: "asc" },
+    include: { players: true },
+  })
+
   return tournaments
 }
 
@@ -92,7 +117,7 @@ export async function generateNextRound(tournamentId: string) {
       data: newPairings.map((pair) => ({
         roundNumber: pair.roundNumber,
         whiteId: pair.whiteId,
-        blackId: pair.blackId,
+        blackId: pair.blackId ?? null,
         result: null,
         tournamentId,
       })),

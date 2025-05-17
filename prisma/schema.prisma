@@ -16,12 +16,13 @@ datasource db {
 
 model User {
   id            String   @id @default(cuid())
-  name          String?
+  firstname     String?
+  surname       String?
   email         String?  @unique
   emailVerified DateTime?
-  image         String?
   accounts      Account[]
   sessions      Session[]
+  role          Role@default(PLAYER)
 }
 
 model Account {
@@ -78,7 +79,6 @@ model Player {
   tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-
   whiteGames   Pairing[] @relation("WhitePlayer")
   blackGames   Pairing[] @relation("BlackPlayer")
 }
@@ -91,8 +91,13 @@ model Pairing {
   tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   whiteId      String
   white        Player    @relation("WhitePlayer", fields: [whiteId], references: [id], onDelete: Cascade)
-  blackId      String
-  black        Player    @relation("BlackPlayer", fields: [blackId], references: [id], onDelete: Cascade)
+  blackId      String?
+  black        Player?    @relation("BlackPlayer", fields: [blackId], references: [id], onDelete: Cascade)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
+}
+
+enum Role {
+  PLAYER
+  JUDGE
 }

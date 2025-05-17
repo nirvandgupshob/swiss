@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table"
 import { Button } from "./ui/button"
-import { updateResult } from "../api/action/pairing-actions"
+import { updateResult} from "../api/action/pairing-actions"
 import { useRouter } from "next/navigation"
 
 type Pairing = {
@@ -30,6 +30,7 @@ interface PairingsTableProps {
   initialPairings: Pairing[]
   initialRounds: number[]
   initialSelectedRound: number | null
+  userRole: "PLAYER" | "JUDGE"
 }
 
 export function PairingsTable({
@@ -37,13 +38,14 @@ export function PairingsTable({
   initialPairings,
   initialRounds,
   initialSelectedRound,
+  userRole
 }: PairingsTableProps) {
   const router = useRouter()
   const [pairings, setPairings] = useState<Pairing[]>(initialPairings)
   const [selectedRound, setSelectedRound] = useState<number | null>(initialSelectedRound)
 
   async function handleResultChange(pairingId: string, result: "1-0" | "0-1" | "½-½") {
-    try {
+    try {  
       const success = await updateResult(tournamentId, pairingId, result)
       if (success) {
         // Update local state
@@ -112,10 +114,15 @@ export function PairingsTable({
                 </TableCell>
                 <TableCell>{pairing.white.rating}</TableCell>
                 <TableCell>
-                  {pairing.black.lastName}, {pairing.black.firstName} 
+                  {pairing.black
+                  ? `${pairing.black.lastName}, ${pairing.black.firstName}`
+                  : "Бай-раунд"}
                 </TableCell>
-                <TableCell>{pairing.black.rating}</TableCell>
+                <TableCell>{pairing.black
+                  ? `${pairing.black.rating}`
+                  : "--"}</TableCell>
                 <TableCell>
+                  {userRole === "JUDGE" ? /* ЕСЛИ, ТО */
                   <div className="flex justify-center space-x-2">
                     <Button
                       variant={pairing.result === "1-0" ? "default" : "outline"}
@@ -138,7 +145,11 @@ export function PairingsTable({
                     >
                       0-1
                     </Button>
-                  </div>
+                  </div> : ( /* ИНАЧЕ */
+                    <div className="text-center text-muted-foreground">
+                      {pairing.result || "—"}
+                    </div>
+                  )}
                 </TableCell>
               </TableRow>
             ))}

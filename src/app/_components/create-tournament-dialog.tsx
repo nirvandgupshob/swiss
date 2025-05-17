@@ -70,7 +70,7 @@ export function CreateTournamentDialog({ children }: { children: React.ReactNode
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="City Championship 2025"
+                placeholder="Your Tournament name"
                 required
               />
             </div>

@@ -1,4 +1,5 @@
 "use client"
+//src/app/_components/tournament-list.tsx
 import { useState, useTransition } from "react"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card" 
 import { Badge } from "./ui/badge" 
@@ -18,9 +19,10 @@ type Tournament = {
 
 interface TournamentListProps {
   initialTournaments: Tournament[]
+  userRole: "PLAYER" | "JUDGE"
 }
 
-export function TournamentList({ initialTournaments }: TournamentListProps) {
+export function TournamentList({ initialTournaments, userRole }: TournamentListProps) {
   const [tournaments, setTournaments] = useState<Tournament[]>(initialTournaments)
   const [isPending, startTransition] = useTransition()
 
@@ -48,14 +50,14 @@ export function TournamentList({ initialTournaments }: TournamentListProps) {
               <CardTitle className="text-xl">{tournament.name}</CardTitle>
               <div className="flex items-center gap-2">
                 <StatusBadge status={tournament.status} />
-                <Button
+                { userRole === "JUDGE" && <Button
                   variant="ghost"
                   size="icon"
                   onClick={() => handleDeleteTournament(tournament.id)}
                   disabled={isPending}
                 >
                   <Trash2 className="h-4 w-4 text-destructive" />
-                </Button>
+                </Button>}
               </div>
             </div>
           </CardHeader>

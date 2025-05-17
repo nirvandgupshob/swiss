@@ -1,5 +1,5 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
-// import { $Enums } from "@prisma/client";
+import { $Enums } from "@prisma/client";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import EmailProvider from "next-auth/providers/nodemailer";
 import { sendVerificationRequest } from "src/mailers/auth-mailer";
@@ -17,7 +17,7 @@ declare module "next-auth" {
     user: {
       id: string;
       // ...other properties
-      //role: $Enums.Role;
+      role: $Enums.Role;
     } & DefaultSession["user"];
   }
 

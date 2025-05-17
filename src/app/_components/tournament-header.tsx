@@ -19,9 +19,10 @@ type TournamentHeaderProps = {
     status: "upcoming" | "active" | "completed"
     participantsCount: number
   }
+    userRole: "PLAYER" | "JUDGE"
 }
 
-export function TournamentHeader({ tournament }: TournamentHeaderProps) {
+export function TournamentHeader({ tournament, userRole }: TournamentHeaderProps) {
   const router = useRouter()
   const [isGenerating, setIsGenerating] = useState(false)
 
@@ -75,7 +76,7 @@ export function TournamentHeader({ tournament }: TournamentHeaderProps) {
             </div>
             <div className="flex items-center text-sm text-muted-foreground">
               <Users className="mr-1 h-4 w-4" />
-              <span>{tournament.participantsCount} participants</span> {/* ОШИБКА ЗДЕСЬ */}
+              <span>{tournament.participantsCount} participants</span> 
             </div>
             <div className="flex items-center text-sm text-muted-foreground">
               <Trophy className="mr-1 h-4 w-4" />
@@ -90,7 +91,7 @@ export function TournamentHeader({ tournament }: TournamentHeaderProps) {
         </div>
 
         <div className="flex space-x-2">
-          {tournament.status !== "completed" && tournament.currentRound < tournament.rounds && (
+          {tournament.status !== "completed" && tournament.currentRound < tournament.rounds && userRole === "JUDGE" && (
             <Button onClick={handleGenerateNextRound} disabled={isGenerating}>
               {isGenerating ? "Generating..." : `Generate Round ${tournament.currentRound + 1}`}
             </Button>
