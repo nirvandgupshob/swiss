@@ -99,7 +99,7 @@ export function CreateTournamentDialog({ children }: { children: React.ReactNode
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
-                  <DayPicker mode="single" selected={date} onSelect={setDate} /> 
+                  <DayPicker mode="single" selected={date} onSelect={setDate} disabled={{ before: new Date() }} /> 
                 </PopoverContent>
               </Popover>
             </div>

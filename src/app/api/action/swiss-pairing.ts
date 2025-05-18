@@ -10,7 +10,7 @@ type Player = {
     id: string;
     roundNumber: number;
     whiteId: string;
-    blackId: string;
+    blackId: string | null;
     result: string | null;
     tournamentId: string;
   };

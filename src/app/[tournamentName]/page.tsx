@@ -24,7 +24,7 @@ export default async function TournamentPage({
     const tournament = await getTournamentByName(tournamentName)
 
     if (!tournament) {
-      notFound()
+      return null;
     }
 
     // Pre-fetch all data needed by client components

@@ -22,7 +22,7 @@ type Pairing = {
     firstName: string;
     lastName: string;
     rating: number;
-  };
+  } | null;
 };
 
 interface PairingsTableProps {
