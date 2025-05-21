@@ -17,22 +17,38 @@ export async function getTournamentsForUser(userId: string) {
     where: { id: userId },
     select: { firstname: true, surname: true },
   })
-
+  console.log("Имя и фамилия:", user?.firstname, user?.surname);
   if (!user || !user.firstname || !user.surname) {
     return [] 
   }
 
+  const players = await db.player.findMany({
+    where: {
+      firstName: user.firstname,
+      lastName: user.surname,
+    },
+    select: {
+      tournamentId: true,
+    },
+  })
+
+  const tournamentIds = players.map(p => p.tournamentId)
+
+  if (tournamentIds.length === 0) return []
+
+  // 2. Найдём турниры по ID
   const tournaments = await db.tournament.findMany({
     where: {
-      players: {
-        some: {
-          firstName: user?.firstname,
-          lastName: user?.surname,
-        },
+      id: {
+        in: tournamentIds,
       },
     },
-    orderBy: { startDate: "asc" },
-    include: { players: true },
+    orderBy: {
+      startDate: "asc",
+    },
+    include: {
+      players: true,
+    },
   })
 
   return tournaments

@@ -12,6 +12,7 @@ export default async function Home() {
   const session = await auth(); 
   const role = session?.user.role;
   const userId = session?.user.id;
+  console.log(userId);
   const tournaments = (role === "PLAYER" ? await getTournamentsForUser(userId!) : await getTournaments());
   const tournamentsWithCounts = await Promise.all(
   tournaments.map(async (tournament) => {

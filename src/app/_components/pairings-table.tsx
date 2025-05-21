@@ -1,5 +1,5 @@
 "use client"
-
+//src/app/_components/pairings-table.tsx
 import { useState } from "react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table"

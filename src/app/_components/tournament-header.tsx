@@ -4,7 +4,7 @@
 import { Button } from "./ui/button"
 import { Badge } from "./ui/badge"
 import { Calendar, Users, Trophy, ChevronLeft } from "lucide-react"
-import { useRouter } from "next/navigation"
+
 import { generateNextRound } from "../api/action/tournament-actions"
 import { useState } from "react"
 import Link from "next/link"
@@ -23,7 +23,6 @@ type TournamentHeaderProps = {
 }
 
 export function TournamentHeader({ tournament, userRole }: TournamentHeaderProps) {
-  const router = useRouter()
   const [isGenerating, setIsGenerating] = useState(false)
 
   async function handleGenerateNextRound() {
@@ -33,7 +32,7 @@ export function TournamentHeader({ tournament, userRole }: TournamentHeaderProps
     try {
       const success = await generateNextRound(tournament.id)
       if (success) {
-        router.refresh()
+        window.location.reload()
       }
     } catch (error) {
       console.error("Failed to generate next round:", error)
@@ -91,10 +90,13 @@ export function TournamentHeader({ tournament, userRole }: TournamentHeaderProps
         </div>
 
         <div className="flex space-x-2">
-          {tournament.status !== "completed" && tournament.currentRound < tournament.rounds && userRole === "JUDGE" && (
-            <Button onClick={handleGenerateNextRound} disabled={isGenerating}>
-              {isGenerating ? "Generating..." : `Generate Round ${tournament.currentRound + 1}`}
-            </Button>
+          {tournament.status !== "completed" &&
+          tournament.currentRound < tournament.rounds &&
+          userRole === "JUDGE" &&
+          tournament.participantsCount >= 4 && (
+          <Button onClick={handleGenerateNextRound} disabled={isGenerating}>
+            {isGenerating ? "Generating..." : `Generate Round ${tournament.currentRound + 1}`}
+          </Button>
           )}
         </div>
       </div>
