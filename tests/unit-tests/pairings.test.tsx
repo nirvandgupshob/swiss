@@ -18,7 +18,6 @@ vi.mock("@/app/api/action/pairing-actions", () => ({
   updateResult: vi.fn().mockResolvedValue(true),
 }))
 
-import { updateResult } from "../../src/app/api/action/pairing-actions"
 
 describe("PairingsTable", () => {
   const mockPairings = [

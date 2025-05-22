@@ -1,6 +1,6 @@
 "use server"
 // app/api/action/tournament-actions.ts
-import { revalidatePath } from "next/cache"
+import { revalidatePath } from "next/cache.js"
 import { generatePairings } from "./swiss-pairing"
 import { db } from "../../../server/db";
 

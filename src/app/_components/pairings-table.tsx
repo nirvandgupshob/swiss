@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table"
 import { Button } from "./ui/button"
 import { updateResult} from "../api/action/pairing-actions"
-import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation.js"
 
 type Pairing = {
   id: string;

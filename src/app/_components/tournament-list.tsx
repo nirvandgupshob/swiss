@@ -4,7 +4,7 @@ import { useState, useTransition } from "react"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card" 
 import { Badge } from "./ui/badge" 
 import { Calendar, Users, ChevronRight, Trash2 } from "lucide-react"
-import Link from "next/link"
+import Link from "next/link.js"
 import { Button } from "./ui/button"
 import { deleteTournament } from "../api/action/tournament-actions"
 
