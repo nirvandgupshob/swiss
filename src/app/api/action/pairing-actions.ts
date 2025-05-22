@@ -2,6 +2,7 @@
 //src/app/api/action/pairing-actions.ts
 import { revalidatePath } from "next/cache"
 import { db } from "../../../server/db";
+import { getTournaments } from "./tournament-actions";
 
 export async function getPairings(tournamentId: string) {
   return await db.pairing.findMany({
@@ -24,7 +25,7 @@ export async function updateResult(
     data: { result },
   })
 
-  const tournaments = await import("./tournament-actions").then((m) => m.getTournaments())
+  const tournaments =  await getTournaments();
   const tournament = tournaments.find((t) => t.id === tournamentId)
   if (tournament) {
     revalidatePath(`/${encodeURIComponent(tournament.name)}`)

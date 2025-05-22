@@ -1,5 +1,5 @@
 "use client"
-
+//src/app/_components/participants-list.tsx
 import type React from "react"
 import { useState } from "react"
 import { Button } from "./ui/button"

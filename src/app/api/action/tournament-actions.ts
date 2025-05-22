@@ -8,7 +8,6 @@ import { db } from "../../../server/db";
 export async function getTournaments() {
   const tournaments = await db.tournament.findMany({
     orderBy: { startDate: "asc" },
-    include: { players: true }, // если связь есть ПРОВЕРИТЬ НАДО ЛИ
   });
   return tournaments
 }
@@ -46,9 +45,6 @@ export async function getTournamentsForUser(userId: string) {
     orderBy: {
       startDate: "asc",
     },
-    include: {
-      players: true,
-    },
   })
 
   return tournaments
@@ -59,10 +55,6 @@ export async function getTournamentByName(name: string) {
     const tournament = await db.tournament.findUnique({
       where: {
         name,
-      },
-      include: {
-        players: true, // ВОЗМОЖНО НЕ НУЖНО
-        pairings: true, // УБРАТЬ ПОТОМ
       },
     })
 
