@@ -1,29 +1,48 @@
-# Create T3 App
+# Chess Tournament Manager 
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+Веб-приложение для управления шахматными турнирами, реализованное на Next.js с поддержкой Swiss-системы жеребьёвки.
 
-## What's next? How do I make an app with this?
+## 🚀 Технологии
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+- [Next.js](https://nextjs.org/) — фреймворк для React с серверным рендерингом
+- [Prisma ORM](https://www.prisma.io/) — работа с базой данных
+- [Tailwind CSS](https://tailwindcss.com/) + [Shadcn UI](https://ui.shadcn.com/) — стилизация и UI-компоненты
+- [Radix UI](https://www.radix-ui.com/) — базовые компоненты интерфейса
+- [Vitest](https://vitest.dev/) — модульное тестирование
+- [Playwright](https://playwright.dev/) — e2e тестирование
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## ⚙️ Возможности
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+- Регистрация игроков и создание турниров
+- Автоматическое построение пар по швейцарской системе
+- Учёт результатов и подсчёт очков
+- Разграничение ролей (игрок / судья)
+- Отображение турнирной таблицы, пар и участников
 
-## Learn More
+## 🛠️ Установка и запуск
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+```bash
+# Клонируем репозиторий
+git clone https://github.com/your-username/chess-tournament-app.git
+cd swiss
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+# Устанавливаем зависимости
+pnpm install
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+# Генерируем Prisma клиент и сидируем базу данных
+pnpx prisma generate
 
-## How do I deploy this?
+# Запуск проекта
+pnpm run dev
+```
+## 🧪 Тесты
+```bash
+# Unit тесты
+pnpm test
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+# E2E тесты
+pnpm test:e2e
+
+# E2E тесты в режиме дебагга
+pnpm test:e2e:debug
+```
