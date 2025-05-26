@@ -1,12 +1,12 @@
 "use server"
 //src/app/api/action/standings-actions.ts
+import { getParticipants} from "./participant-actions"
+import { getPairings } from "./pairing-actions"
 export async function getStandings(tournamentId: string) {
   // Get participants and pairings
-  const participants = await import("./participant-actions").then((module) =>
-    module.getParticipants(tournamentId),
-  )
+  const participants = await getParticipants(tournamentId);
 
-  const pairings = await import("./pairing-actions").then((module) => module.getPairings(tournamentId))
+  const pairings = await getPairings(tournamentId);
 
   // Calculate standings
   const standings = participants.map((participant) => {

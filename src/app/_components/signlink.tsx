@@ -1,9 +1,11 @@
 import Link from "next/link";
-
+import { Button } from "./ui/button"
 export function SigninLink() {
   return (
-    <Link href="/api/auth/signin" className="btn">
-      Sign in
-    </Link>
+    <Button asChild>
+      <Link href="/api/auth/signin">
+        Sign in
+      </Link>
+    </Button>
   );
 }

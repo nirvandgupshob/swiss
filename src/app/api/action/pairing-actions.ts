@@ -8,7 +8,7 @@ export async function getPairings(tournamentId: string) {
   return await db.pairing.findMany({
     where: { tournamentId },
     orderBy: { roundNumber: "asc" },
-    include: {
+    include: {  // Используется в таблице
       white: true, 
       black: true,  
     },

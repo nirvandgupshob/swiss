@@ -1,5 +1,5 @@
 "use client"
-// /src/app/_components/create-tournament.tsx
+// /src/app/_components/create-tournament-dialog.tsx
 import type React from "react"
 
 import { useState } from "react"

@@ -140,8 +140,8 @@ const sortedPlayers = [...standings].sort((a, b) => {
   return newPairings;
 }
   
-  function calculateStandings(players: Player[], pairings: Pairing[]) {
-    return players.map((player) => {
+function calculateStandings(players: Player[], pairings: Pairing[]) {
+  return players.map((player) => {
       // Find all pairings where this player played
       const playerPairings = pairings.filter(
         (p) => (p.whiteId === player.id || p.blackId === player.id) && p.result !== null
@@ -168,7 +168,7 @@ const sortedPlayers = [...standings].sort((a, b) => {
         points,
       };
     });
-  }
+}
   
   function countWhiteGames(playerId: string, pairings: Pairing[]) {
     return pairings.filter((p) => p.whiteId === playerId).length;
